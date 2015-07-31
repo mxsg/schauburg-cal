@@ -8,7 +8,11 @@
 import scrapy
 
 
-class SchauburgCalItem(scrapy.Item):
+class MovieShowing(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    date = scrapy.Field()
+    time = scrapy.Field()
+    name = scrapy.Field()
+    url = scrapy.Field()
+    comment = scrapy.Field()
