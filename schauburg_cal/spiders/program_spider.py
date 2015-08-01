@@ -1,6 +1,7 @@
 import scrapy
 import datetime
 import urlparse
+import pytz
 
 from schauburg_cal.items import MovieShowing
 
@@ -40,7 +41,6 @@ class ProgramSpider(scrapy.Spider):
 
             # construct scrapy item
             date = dateThisYear if diffThisYear < diffNextYear else dateNextYear
-            showing['date'] = date
 
             movieEntrySelectors = movies.xpath('tr')
 
@@ -48,11 +48,17 @@ class ProgramSpider(scrapy.Spider):
 
                 tableCells = movieEntry.xpath('td')
 
+                # add time zone information to time
+                tzBerlin = pytz.timezone('Europe/Berlin')
+
                 showingTime = tableCells.xpath('text()').extract_first().split('.')
-                showing['time'] = datetime.time(int(showingTime[0]), int(showingTime[1]))
+                showingDatetimeNaive = datetime.datetime(date.year, date.month, date.day,
+                        int(showingTime[0]), int(showingTime[1]))
+
+                showing['dateTime'] = tzBerlin.localize(showingDatetimeNaive)
+
 
                 showing['name'] = tableCells.xpath('a/text()').extract_first().strip()
-                # TODO: construct complete url, not only extension
                 showing['url'] = urlparse.urljoin(self.base_url,
                         tableCells.xpath('a/@href').extract_first())
 
