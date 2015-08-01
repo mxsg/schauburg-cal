@@ -24,17 +24,16 @@ class SchauburgICalExportPipeline(object):
         event.add('dtend', showing['dateTime'] + datetime.timedelta(hours=2))
         event.add('dtstamp', datetime.datetime.now())
 
+        # put movie URL in description field
+        event.add('url', showing['url'])
+
         comment = showing['comment']
         print comment
 
-        # put movie URL in description field
-        description = showing['url']
-
         if comment is not None:
             print comment
-            description += '\n\n' + comment
+            event.add('description', comment)
 
-        event.add('description', description)
         print "Writing event to calendar..."
         self.cal.add_component(event)
 
