@@ -24,6 +24,13 @@ class SchauburgICalExportPipeline(object):
         event.add('dtend', showing['dateTime'] + datetime.timedelta(hours=2))
         event.add('dtstamp', datetime.datetime.now())
 
+        comment = showing['comment']
+        print comment
+
+        if comment is not None:
+            print comment
+            event.add('description', comment)
+
         print "Writing event to calendar..."
         self.cal.add_component(event)
 
