@@ -31,7 +31,7 @@ class SchauburgICalExportPipeline(object):
 
     def close_spider(self, spider):
 
-        with open('schauburg-calendar.ics', 'w') as f:
+        with open('schauburg.ics', 'w') as f:
             f.write(self.cal.to_ical())
 
 
