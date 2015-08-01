@@ -27,10 +27,14 @@ class SchauburgICalExportPipeline(object):
         comment = showing['comment']
         print comment
 
+        # put movie URL in description field
+        description = showing['url']
+
         if comment is not None:
             print comment
-            event.add('description', comment)
+            description += '\n\n' + comment
 
+        event.add('description', description)
         print "Writing event to calendar..."
         self.cal.add_component(event)
 
