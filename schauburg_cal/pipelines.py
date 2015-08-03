@@ -20,8 +20,11 @@ class SchauburgICalExportPipeline(object):
     def process_item(self, showing, spider):
         event = icalendar.Event()
         event.add('summary', showing['name'])
-        event.add('dtstart', showing['dateTime'])
-        event.add('dtend', showing['dateTime'] + datetime.timedelta(hours=2))
+
+        startdt = showing['dateTime'].astimezone(pytz.utc)
+
+        event.add('dtstart', startdt)
+        event.add('dtend', startdt + datetime.timedelta(hours=2))
         event.add('dtstamp', datetime.datetime.now())
 
         # put movie URL in description field
