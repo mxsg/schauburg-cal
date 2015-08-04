@@ -23,8 +23,13 @@ class SchauburgICalExportPipeline(object):
 
         startdt = showing['dateTime'].astimezone(pytz.utc)
 
+        if 'length' in showing:
+            enddt = startdt + datetime.timedelta(minutes=showing['length'])
+        else:
+            enddt = startdt + datetime.timedelta(hours=2)
+
         event.add('dtstart', startdt)
-        event.add('dtend', startdt + datetime.timedelta(hours=2))
+        event.add('dtend', enddt)
         event.add('dtstamp', datetime.datetime.now())
 
         # put movie URL in description field

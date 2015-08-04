@@ -2,6 +2,7 @@ import scrapy
 import datetime
 import urlparse
 import pytz
+import re
 
 from schauburg_cal.items import MovieShowing
 
@@ -19,8 +20,6 @@ class ProgramSpider(scrapy.Spider):
 
         for dateText, movies in zip(dates, movieLists):
 
-            # construct scrapy item
-            showing = MovieShowing()
 
 
             # the date string is preceded by the day of the week
@@ -45,6 +44,8 @@ class ProgramSpider(scrapy.Spider):
             movieEntrySelectors = movies.xpath('tr')
 
             for movieEntry in movieEntrySelectors:
+                # construct scrapy item
+                showing = MovieShowing()
 
                 tableCells = movieEntry.xpath('td')
 
@@ -59,9 +60,29 @@ class ProgramSpider(scrapy.Spider):
 
 
                 showing['name'] = tableCells.xpath('a/text()').extract_first().strip()
-                showing['url'] = urlparse.urljoin(self.base_url,
+                filmURL = urlparse.urljoin(self.base_url,
                         tableCells.xpath('a/@href').extract_first())
+                showing['url'] = filmURL
 
                 showing['comment'] = tableCells.xpath('i/text()').extract_first()
 
-                yield showing
+                yield scrapy.Request(filmURL, callback=self.parseFilmPage,
+                        meta={'item': showing}, dont_filter=True)
+
+    def parseFilmPage(self, response):
+        showing = response.meta['item']
+
+        dataText = '\n'.join(response.xpath('//p[@class="Daten"]/text()')
+                .extract()).replace('\r\n', '')
+
+        reLength = re.compile(r'(\b\d+)\s+Minuten')
+        m = reLength.search(dataText)
+
+        if m:
+            try:
+                length = int(m.group(1))
+                showing['length'] = length
+            except:
+                showing['length'] = None
+
+        return showing
