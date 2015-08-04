@@ -7,12 +7,16 @@
 
 import scrapy
 
-
 class MovieShowing(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    dateTime = scrapy.Field()
+
+    # general movie information
     name = scrapy.Field()
+    # movieID = scrapy.Field()
     url = scrapy.Field()
-    comment = scrapy.Field()
+    description = scrapy.Field()
+    data = scrapy.Field()
     length = scrapy.Field()
+
+    # information for a single movie showing
+    dateTime = scrapy.Field()
+    comment = scrapy.Field()
