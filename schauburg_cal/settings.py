@@ -63,7 +63,7 @@ NEWSPIDER_MODULE = 'schauburg_cal.spiders'
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     #'schauburg_cal.pipelines.SomePipeline': 300,
-    'schauburg_cal.pipelines.SchauburgICalExportPipeline':100,
+    'schauburg_cal.pipelines.SchauburgICalExportPipeline': 100,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

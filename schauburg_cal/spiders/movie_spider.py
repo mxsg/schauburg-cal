@@ -49,21 +49,18 @@ class MovieSpider(scrapy.Spider):
                 length = int(m.group(1))
                 showing['length'] = length
             except:
-                showing['length'] = None
+                print "*** Could not find film length. ***"
 
         # now parse movie showing information
-
         for dateRowSel in contentSelector.xpath('table[@class="Spielzeiten"][1]/tr'):
             dateString = dateRowSel.xpath('td[1]/i/text()').extract_first()
             dateRE = re.compile(r'\w+\s+(\d+)[.](\d+)[.](\d+):', re.UNICODE)
             m = dateRE.match(dateString)
 
-            movieDate = None
             if m:
                 day = int(m.group(1))
                 month = int(m.group(2))
                 year = int('20' +m.group(3))
-                movieDate = datetime.date(year, month, day)
             else:
                 print "*** Error while parsing showing date. ***"
                 print dateString
@@ -86,6 +83,8 @@ class MovieSpider(scrapy.Spider):
 
                 showing['dateTime'] = tzBerlin.localize(showingDatetimeNaive)
 
-                showing['comment'] = m.group(3)
+                # only write into comment field if comment is present
+                if m.group(3):
+                    showing['comment'] = m.group(3).strip()
 
                 yield showing

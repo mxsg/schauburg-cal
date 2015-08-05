@@ -23,10 +23,8 @@ class SchauburgICalExportPipeline(object):
 
         startdt = showing['dateTime'].astimezone(pytz.utc)
 
-        if 'length' in showing:
-            enddt = startdt + datetime.timedelta(minutes=showing['length'])
-        else:
-            enddt = startdt + datetime.timedelta(hours=2)
+        enddt = startdt + datetime.timedelta(minutes=
+                (showing['length'] if 'length' in showing else 120))
 
         event.add('dtstart', startdt)
         event.add('dtend', enddt)
@@ -35,14 +33,10 @@ class SchauburgICalExportPipeline(object):
         # put movie URL in description field
         event.add('url', showing['url'])
 
-        comment = showing['comment']
-        print comment
+        if 'comment' in showing:
+            event.add('description', showing['comment'])
 
-        if comment is not None:
-            print comment
-            event.add('description', comment)
-
-        print "Writing event to calendar..."
+        # writint event to calendar
         self.cal.add_component(event)
 
         return showing
