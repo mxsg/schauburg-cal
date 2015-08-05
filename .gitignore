@@ -1,5 +1,6 @@
 # compiled Python byte code
 *.pyc
 
-# generated icalendar files
+# generated icalendar/json files
 *.ics
+*.json
