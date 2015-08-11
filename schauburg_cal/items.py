@@ -20,3 +20,7 @@ class MovieShowing(scrapy.Item):
     # information for a single movie showing
     dateTime = scrapy.Field()
     comment = scrapy.Field()
+
+    def __repr__(self):
+        return repr({"name": self["name"],
+                "dateTime": self["dateTime"].isoformat()})
