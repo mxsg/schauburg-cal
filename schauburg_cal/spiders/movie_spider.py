@@ -45,11 +45,10 @@ class MovieSpider(scrapy.Spider):
         m = reLength.search(showingData)
 
         if m:
-            try:
-                length = int(m.group(1))
-                showing['length'] = length
-            except:
-                print "*** Could not find film length. ***"
+            length = int(m.group(1))
+            showing['length'] = length
+        else:
+            print u'*** Could not find length for movie "{0}". ***'.format(showing['name'])
 
         # now parse movie showing information
         for dateRowSel in contentSelector.xpath('table[@class="Spielzeiten"][1]/tr'):
